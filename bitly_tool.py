@@ -26,8 +26,7 @@ def count_clicks(token, bit_link):
     }
     payload = {
         'unit': 'month',
-        'units': '1',
-        'unit_reference': '2006-01-02T15:04:05-0700'
+        'units': '-1'
     }
     response = requests.get(api_url, headers=headers, params=payload)
     response.raise_for_status()
