@@ -20,13 +20,14 @@ def shorten_link(token, long_url):
 
 
 def count_clicks(token, bit_link):
+    bit_link = remove_prefix(bit_link)
     api_url = f'https://api-ssl.bitly.com/v4/bitlinks/{bit_link}/clicks/summary'
     headers = {
         'Authorization': f'Bearer {token}'
     }
     payload = {
         'unit': 'month',
-        'units': '-1'
+        'units': '-1',
     }
     response = requests.get(api_url, headers=headers, params=payload)
     response.raise_for_status()
@@ -36,6 +37,7 @@ def count_clicks(token, bit_link):
 
 
 def is_bit_link(token, link):
+    link = remove_prefix(link)
     api_url = f"https://api-ssl.bitly.com/v4/bitlinks/{link}"
     headers = {
         "Authorization": f"Bearer {token}"
@@ -45,15 +47,23 @@ def is_bit_link(token, link):
     return response.status_code == 200
 
 
+def remove_prefix(url):
+    """
+    Уделение префикса с протоколом из начала ссылки для корректной работы с API
+    :param url: Ссылка которую надо обрезать
+    """
+    if url.startswith('https://'):
+        no_prefix_url = url.removeprefix('https://')
+    elif url.startswith('http://'):
+        no_prefix_url = url.removeprefix('http://')
+    else:
+        no_prefix_url = url
+    return no_prefix_url
+
+
 def main():
     token = os.environ['TOKEN']
     url = input('Ведите ссылку: ')
-
-    # Уделение префикса с протоколом из начала ссылки для корректной работы с API
-    if url.startswith('https://'):
-        url = url.removeprefix('https://')
-    elif url.startswith('http://'):
-        url = url.removeprefix('http://')
 
     if is_bit_link(token, url):
         try:
@@ -63,7 +73,6 @@ def main():
             print('Ошибка! Убедитесь что это битлинк!', f'\nКод ошибки: {e}')
     else:
         try:
-            url = 'https://' + url
             bit_link = shorten_link(token, url)
             print('Битлинк:', bit_link)
         except requests.exceptions.HTTPError as e:
