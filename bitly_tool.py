@@ -42,7 +42,7 @@ def is_bit_link(token, link):
     }
 
     response = requests.get(api_url, headers=headers)
-    return response.status_code == 200
+    return response.ok
 
 
 def remove_prefix(url):
