@@ -29,8 +29,8 @@ def count_clicks(token, bit_link):
     }
     response = requests.get(api_url, headers=headers, params=payload)
     response.raise_for_status()
-    response_json = response.json()
-    clicks = response_json.get('total_clicks', 0)
+    response_dict = response.json()
+    clicks = response_dict.get('total_clicks', 0)
     return clicks
 
 
