@@ -1,5 +1,6 @@
-import requests
+from urllib.parse import urlparse
 from dotenv import load_dotenv
+import requests
 import os
 
 
@@ -18,7 +19,6 @@ def shorten_link(token, long_url):
 
 
 def count_clicks(token, bit_link):
-    bit_link = remove_prefix(bit_link)
     api_url = f'https://api-ssl.bitly.com/v4/bitlinks/{bit_link}/clicks/summary'
     headers = {
         'Authorization': f'Bearer {token}'
@@ -35,38 +35,24 @@ def count_clicks(token, bit_link):
 
 
 def is_bit_link(token, link):
-    link = remove_prefix(link)
     api_url = f"https://api-ssl.bitly.com/v4/bitlinks/{link}"
     headers = {
         "Authorization": f"Bearer {token}"
     }
 
     response = requests.get(api_url, headers=headers)
-    return response.ok
-
-
-def remove_prefix(url):
-    """
-    Уделение префикса с протоколом из начала ссылки для корректной работы с API
-    :param url: Ссылка которую надо обрезать
-    """
-    if url.startswith('https://'):
-        no_prefix_url = url.removeprefix('https://')
-    elif url.startswith('http://'):
-        no_prefix_url = url.removeprefix('http://')
-    else:
-        no_prefix_url = url
-    return no_prefix_url
+    return response.status_code == 200
 
 
 def main():
     load_dotenv()
     token = os.environ['BITLY_API_TOKEN']
     url = input('Ведите ссылку: ')
+    parsed_url = urlparse(url).netloc + urlparse(url).path
 
-    if is_bit_link(token, url):
+    if is_bit_link(token, parsed_url):
         try:
-            clicks = count_clicks(token, url)
+            clicks = count_clicks(token, parsed_url)
             print(f'Количество переходов по вашей ссылке: {clicks}')
         except requests.exceptions.HTTPError as e:
             print('Ошибка! Убедитесь что это битлинк!', f'\nКод ошибки: {e}')
