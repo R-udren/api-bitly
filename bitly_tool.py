@@ -29,8 +29,8 @@ def count_clicks(token, bit_link):
     }
     response = requests.get(api_url, headers=headers, params=payload)
     response.raise_for_status()
-    response_dict = response.json()
-    clicks = response_dict.get('total_clicks', 0)
+    output = response.json()
+    clicks = output.get('total_clicks')
     return clicks
 
 
@@ -48,7 +48,8 @@ def main():
     load_dotenv()
     token = os.environ['BITLY_API_TOKEN']
     url = input('Ведите ссылку: ')
-    parsed_url = urlparse(url).netloc + urlparse(url).path
+    parsed = urlparse(url)
+    parsed_url = f'{parsed.netloc}{parsed.path}'
 
     if is_bit_link(token, parsed_url):
         try:
