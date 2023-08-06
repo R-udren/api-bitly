@@ -2,8 +2,6 @@ import requests
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
-
 
 def shorten_link(token, long_url):
     api_url = f'https://api-ssl.bitly.com/v4/bitlinks'
@@ -62,7 +60,8 @@ def remove_prefix(url):
 
 
 def main():
-    token = os.environ['TOKEN']
+    load_dotenv()
+    token = os.environ['BITLY_API_TOKEN']
     url = input('Ведите ссылку: ')
 
     if is_bit_link(token, url):
