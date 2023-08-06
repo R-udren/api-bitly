@@ -29,4 +29,4 @@ Before running the script, you need to set up your Bitly API token. Here's how:
 1. Go to [Bitly's Documentation](https://dev.bitly.com/docs/getting-started/authentication/) and create an account.
 2. Create a new access token.
 3. Rename the `EXAMPLE.env` file to `.env`.
-4. Open the .env file and replace TOKEN with your actual Bitly API token.
+4. Open the `.env` file and replace `YOUR_BITLY_TOKEN` with your actual Bitly API token.
