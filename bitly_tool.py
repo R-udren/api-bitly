@@ -1,5 +1,6 @@
 from urllib.parse import urlparse
 from dotenv import load_dotenv
+import argparse
 import requests
 import os
 
@@ -29,7 +30,8 @@ def count_clicks(token, bit_link):
     }
     response = requests.get(api_url, headers=headers, params=payload)
     response.raise_for_status()
-    clicks = response.json().get('total_clicks')
+    response_dict = response.json()
+    clicks = response_dict.get('total_clicks', 0)
     return clicks
 
 
@@ -46,19 +48,23 @@ def is_bit_link(token, link):
 def main():
     load_dotenv()
     token = os.environ['BITLY_API_TOKEN']
-    original_url = input('Ведите ссылку: ')
-    parsed_url = urlparse(original_url)
-    netloc_with_path = f'{parsed_url.netloc}{parsed_url.path}'
 
-    if is_bit_link(token, netloc_with_path):
+    parser = argparse.ArgumentParser(description='Программа создает и считает клики по битлинку.')
+    parser.add_argument('url', help='Ваша ссылка')
+    args = parser.parse_args()
+
+    url = args.url
+    parsed_url = urlparse(url).netloc + urlparse(url).path
+
+    if is_bit_link(token, parsed_url):
         try:
-            clicks = count_clicks(token, netloc_with_path)
+            clicks = count_clicks(token, parsed_url)
             print(f'Количество переходов по вашей ссылке: {clicks}')
         except requests.exceptions.HTTPError as e:
             print('Ошибка! Убедитесь что это битлинк!', f'\nКод ошибки: {e}')
     else:
         try:
-            bit_link = shorten_link(token, original_url)
+            bit_link = shorten_link(token, url)
             print('Битлинк:', bit_link)
         except requests.exceptions.HTTPError as e:
             print('Ошибка! Убедитесь что ввели правильную ссылку!', f'\nКод ошибки: {e}')
