@@ -23,6 +23,10 @@ pip install -r requirements.txt
 ```bash
 python main.py [your link]
 ```
+5. You can see usage by typing
+```bash
+python main.py -h
+```
 
 ## Configuration
 Before running the script, you need to set up your Bitly API token. Here's how:
