@@ -21,7 +21,7 @@ pip install -r requirements.txt
 ```
 4. __After configuration__ launch script. 
 ```bash
-python bitly_tool.py [your link]
+python main.py [your link]
 ```
 
 ## Configuration
