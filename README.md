@@ -19,9 +19,9 @@ cd api-bitly
 ```bash
 pip install -r requirements.txt
 ```
-4. __After configuration__ launch script
+4. __After configuration__ launch script. 
 ```bash
-python bitly_tool.py
+python bitly_tool.py [your link]
 ```
 
 ## Configuration
